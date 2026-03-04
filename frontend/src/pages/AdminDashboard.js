@@ -77,9 +77,10 @@ function AdminDashboard() {
     window.location.href = "/admin";
   };
 
-  useEffect(() => {
-    fetchTickets();
-  }, [statusFilter, currentPage]);
+useEffect(() => {
+  fetchTickets();
+// eslint-disable-next-line react-hooks/exhaustive-deps
+}, []);
 
   useEffect(() => {
     fetchAnalytics();
