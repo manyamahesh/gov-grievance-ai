@@ -7,18 +7,25 @@ import Track from "./pages/Track";
 // import AdminDashboard from "./pages/AdminDashboard";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
-
-
+import ProtectedRoute from "./components/ProtectedRoute";
+import Navbar from "./components/Navbar";
 function App() {
   return (
     <Router>
+      <Navbar />
+
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/track" element={<Track />} />
         <Route path="/admin" element={<AdminLogin />} />
-        <Route path="/dashboard" element={<AdminDashboard />} />
-        {/* <Route path="/admin" element={<AdminLogin />} /> */}
-        {/* <Route path="/dashboard" element={<AdminDashboard />} /> */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </Router>
   );
