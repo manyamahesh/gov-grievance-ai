@@ -28,7 +28,6 @@ function AdminLogin() {
       localStorage.setItem("token", res.data.access_token);
 
       window.location.href = "/dashboard";
-
     } catch (error) {
       alert("Invalid credentials");
     }
@@ -60,7 +59,6 @@ function AdminLogin() {
             Login
           </button>
         </form>
-
       </div>
     </div>
   );
@@ -74,7 +72,6 @@ const styles = {
     minHeight: "90vh",
     background: "#f3f4f6",
   },
-
   card: {
     background: "white",
     padding: "40px",
@@ -82,12 +79,10 @@ const styles = {
     borderRadius: "10px",
     boxShadow: "0px 5px 20px rgba(0,0,0,0.1)",
   },
-
   title: {
     textAlign: "center",
     marginBottom: "20px",
   },
-
   input: {
     width: "100%",
     padding: "10px",
@@ -95,7 +90,6 @@ const styles = {
     borderRadius: "5px",
     border: "1px solid #ccc",
   },
-
   button: {
     width: "100%",
     padding: "12px",
