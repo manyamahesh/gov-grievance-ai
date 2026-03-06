@@ -2,6 +2,9 @@ import { useState } from "react";
 import API from "../api/api";
 
 function AdminLogin() {
+   const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+ 
  const login = async (e) => {
   e.preventDefault();
 
