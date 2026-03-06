@@ -2,64 +2,65 @@ import { useState } from "react";
 import API from "../api/api";
 
 function AdminLogin() {
-   const [username, setUsername] = useState("");
+
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
- 
- const login = async (e) => {
-  e.preventDefault();
 
-  if (!username || !password) {
-    alert("Enter username and password");
-    return;
-  }
+  const login = async (e) => {
+    e.preventDefault();
 
-  try {
-    const formData = new URLSearchParams();
-    formData.append("username", username);
-    formData.append("password", password);
+    if (!username || !password) {
+      alert("Enter username and password");
+      return;
+    }
 
-    const res = await API.post("/admin/login", formData, {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-    });
+    try {
+      const formData = new URLSearchParams();
+      formData.append("username", username);
+      formData.append("password", password);
 
-    const token = res.data.access_token;
+      const res = await API.post("/admin/login", formData, {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      });
 
-    localStorage.setItem("token", token);
+      localStorage.setItem("token", res.data.access_token);
 
-    window.location.href = "/dashboard";
+      window.location.href = "/dashboard";
 
-  } catch (error) {
-    console.log(error);
-    alert("Invalid credentials");
-  }
-};
+    } catch (error) {
+      alert("Invalid credentials");
+    }
+  };
 
   return (
     <div style={styles.container}>
       <div style={styles.card}>
         <h2 style={styles.title}>Admin Login</h2>
 
-        <input
-          type="text"
-          placeholder="Username"
-          style={styles.input}
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
+        <form onSubmit={login}>
+          <input
+            type="text"
+            placeholder="Username"
+            style={styles.input}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
 
-        <input
-          type="password"
-          placeholder="Password"
-          style={styles.input}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+          <input
+            type="password"
+            placeholder="Password"
+            style={styles.input}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
-        <button style={styles.button} onClick={login}>
-          Login
-        </button>
+          <button type="submit" style={styles.button}>
+            Login
+          </button>
+        </form>
+
       </div>
     </div>
   );
@@ -80,16 +81,15 @@ const styles = {
     width: "350px",
     borderRadius: "10px",
     boxShadow: "0px 5px 20px rgba(0,0,0,0.1)",
-    display: "flex",
-    flexDirection: "column",
   },
 
   title: {
-    marginBottom: "25px",
     textAlign: "center",
+    marginBottom: "20px",
   },
 
   input: {
+    width: "100%",
     padding: "10px",
     marginBottom: "15px",
     borderRadius: "5px",
@@ -97,6 +97,7 @@ const styles = {
   },
 
   button: {
+    width: "100%",
     padding: "12px",
     background: "#2563eb",
     color: "white",
