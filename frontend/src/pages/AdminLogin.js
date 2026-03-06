@@ -2,28 +2,36 @@ import { useState } from "react";
 import API from "../api/api";
 
 function AdminLogin() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+ const login = async (e) => {
+  e.preventDefault();
 
-  const login = async () => {
-    if (!username || !password) {
-      alert("Enter username and password");
-      return;
-    }
+  if (!username || !password) {
+    alert("Enter username and password");
+    return;
+  }
 
-    try {
-      const res = await API.post("/admin/login", {
-        username,
-        password,
-      });
+  try {
+    const formData = new URLSearchParams();
+    formData.append("username", username);
+    formData.append("password", password);
 
-      localStorage.setItem("token", res.data.access_token);
+    const res = await API.post("/admin/login", formData, {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    });
 
-      window.location.href = "/dashboard";
-    } catch (error) {
-      alert("Invalid credentials");
-    }
-  };
+    const token = res.data.access_token;
+
+    localStorage.setItem("token", token);
+
+    window.location.href = "/dashboard";
+
+  } catch (error) {
+    console.log(error);
+    alert("Invalid credentials");
+  }
+};
 
   return (
     <div style={styles.container}>
