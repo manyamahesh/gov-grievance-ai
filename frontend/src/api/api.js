@@ -1,35 +1,74 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://gov-grievance-ai.onrender.com",
+  baseURL: process.env.REACT_APP_API_URL || "http://localhost:8000",
+  withCredentials: true, // Send httpOnly cookies automatically (citizen_access_token and admin_access_token)
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-// Attach token automatically
-API.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("token");
+// Interceptor to handle automatic admin refresh token retry on 401
+let isRefreshing = false;
+let failedQueue = [];
 
-    if (token) {
-      config.headers = config.headers || {};
-      config.headers.Authorization = `Bearer ${token}`;
+const processQueue = (error, token = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
     }
+  });
+  failedQueue = [];
+};
 
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
-
-// Optional: auto-logout on 401
 API.interceptors.response.use(
   (response) => response,
-  (error) => {
-    if (error.response && error.response.status === 401) {
-      localStorage.removeItem("token");
-      window.location.href = "/admin";
+  async (error) => {
+    const originalRequest = error.config;
+
+    // Trigger admin refresh token flow only for admin-specific 401s
+    const isAdminRoute =
+      originalRequest.url.includes("/admin/") ||
+      originalRequest.url.includes("/tickets") ||
+      originalRequest.url.includes("/analytics/");
+
+    if (
+      error.response &&
+      error.response.status === 401 &&
+      !originalRequest._retry &&
+      isAdminRoute &&
+      !originalRequest.url.includes("/admin/login") &&
+      !originalRequest.url.includes("/admin/refresh")
+    ) {
+      originalRequest._retry = true;
+
+      if (isRefreshing) {
+        return new Promise(function (resolve, reject) {
+          failedQueue.push({ resolve, reject });
+        })
+          .then(() => API(originalRequest))
+          .catch((err) => Promise.reject(err));
+      }
+
+      isRefreshing = true;
+
+      try {
+        await API.post("/admin/refresh");
+        isRefreshing = false;
+        processQueue(null);
+        return API(originalRequest);
+      } catch (refreshError) {
+        isRefreshing = false;
+        processQueue(refreshError, null);
+        if (window.location.pathname.startsWith("/dashboard")) {
+          window.location.href = "/admin";
+        }
+        return Promise.reject(refreshError);
+      }
     }
+
     return Promise.reject(error);
   }
 );

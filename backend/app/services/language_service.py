@@ -1,13 +1,9 @@
-def detect_language(message: str) -> str:
-    # Simple heuristic detection
-    try:
-        message.encode("ascii")
-        return "English"
-    except UnicodeEncodeError:
-        return "Non-English"
+from app.services.llm_service import analyze_grievance_sync
+
 def detect_language(text: str) -> str:
+    """Detect language of text using LLM service wrapper."""
     try:
-        language = detect(text)
-        return language
+        res = analyze_grievance_sync([{"role": "user", "content": text}])
+        return res.get("detected_language", "English")
     except Exception:
-        return "unknown"
+        return "English"
