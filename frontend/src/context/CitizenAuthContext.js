@@ -33,13 +33,18 @@ export function CitizenAuthProvider({ children }) {
 
   const loginCitizen = async (username, password) => {
     const res = await API.post("/login", { username, password });
-    await fetchCurrentCitizen();
+    // Set user directly from response — no second /me round-trip, no race condition
+    const userData = res.data?.user ?? res.data;
+    setCitizenUser(userData);
     return res.data;
   };
 
   const signupCitizen = async (username, password) => {
     const res = await API.post("/signup", { username, password });
-    await fetchCurrentCitizen();
+    // Set user directly from signup response — avoids race condition where
+    // browser hasn't committed the Set-Cookie before the /me check fires.
+    const userData = res.data?.user ?? res.data;
+    setCitizenUser(userData);
     return res.data;
   };
 
