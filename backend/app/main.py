@@ -79,11 +79,11 @@ def startup_event():
     try:
         if mongo_client:
             mongo_client.admin.command("ping")
-            logger.info("✅ MongoDB Atlas connection verified on startup!")
+            logger.info("MongoDB Atlas connection verified on startup!")
         else:
-            logger.info("ℹ️ Running in-memory database fallback mode (MongoDB Atlas unreachable).")
+            logger.info("Running in-memory database fallback mode (MongoDB Atlas unreachable).")
     except Exception as e:
-        logger.error(f"❌ MongoDB connection error on startup: {e}")
+        logger.error(f"MongoDB connection error on startup: {e}")
 
 
 @app.get(

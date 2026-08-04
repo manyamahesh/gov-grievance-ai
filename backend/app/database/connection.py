@@ -167,8 +167,8 @@ try:
         users_collection.create_index([("username", ASCENDING)], unique=True)
         users_collection.create_index([("user_id", ASCENDING)], unique=True)
 
-        logger.info("Successfully connected to MongoDB Atlas & created database indexes!")
-        print("Successfully connected to MongoDB Atlas & created database indexes!")
+        logger.info("Successfully connected to MongoDB Atlas and created database indexes.")
+        print("Successfully connected to MongoDB Atlas and created database indexes.")
     else:
         raise ValueError("MONGO_URI not provided")
 
@@ -211,7 +211,7 @@ redis_client = None
 try:
     redis_client = redis.Redis.from_url(REDIS_URL, decode_responses=True)
     redis_client.ping()
-    print("Redis client connected!")
+    print("Redis client connected.")
 except Exception as err:
     logger.warning(f"Redis connection failed or unconfigured: {err}. Caching disabled.")
     redis_client = None
