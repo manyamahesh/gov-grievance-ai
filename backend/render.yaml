@@ -4,6 +4,6 @@ services:
     runtime: python
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
-
+    FRONTEND_URL=https://govgrievanceai-three.vercel.app
 
     pythonVersion: 3.12.4
