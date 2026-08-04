@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || "http://localhost:8000",
+  baseURL: process.env.REACT_APP_API_URL || "/api",
   withCredentials: true, // Send httpOnly cookies automatically (citizen_access_token and admin_access_token)
   headers: {
     "Content-Type": "application/json",
